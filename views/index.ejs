@@ -1,0 +1,881 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Recipes | Mealie Cookbook</title>
+  <style>
+    :root {
+      --page-width: 1200px;
+      --margin: 1rem;
+      --text-color: #1a1a1a;
+      --muted-color: #5c5c5c;
+      --border-color: #d4d4d4;
+      --accent1: #8b6b4a;
+      --accent2: #5c5c5c;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #e8e4dc;
+      font-family: "Georgia", "Times New Roman", serif;
+      padding: 2rem;
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: var(--page-width);
+      margin: 0 auto;
+      background: #fff;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+      padding: 2rem;
+      border-radius: 4px;
+    }
+
+    .recipe-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .recipe-header h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      color: #2c2c2c;
+    }
+
+    /* Filter bar styling */
+    .filter-bar {
+      background: #f9f8f5;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    /* Checkbox Dropdown Styles */
+    .filter-dropdown {
+      position: relative;
+      font-size: 0.85rem;
+      min-width: 200px;
+    }
+
+    .filter-dropdown .dropdown-label {
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 0.4rem 1.5rem 0.4rem 0.6rem;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      position: relative;
+    }
+
+    .filter-dropdown .dropdown-label::after {
+      content: '▼';
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.7rem;
+    }
+
+    .filter-dropdown.on .dropdown-label::after {
+      content: '▲';
+    }
+
+    .filter-dropdown .dropdown-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      max-height: 250px;
+      overflow-y: auto;
+      z-index: 200;
+      display: none;
+      margin-top: 2px;
+    }
+
+    .filter-dropdown.on .dropdown-list {
+      display: block;
+    }
+
+    .dropdown-option {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .dropdown-option:hover {
+      background: #f0efe7;
+    }
+
+    .dropdown-option input {
+      margin: 0;
+    }
+
+    .dropdown-option a {
+      text-decoration: none;
+      color: var(--accent1);
+      display: block;
+      width: 100%;
+    }
+
+    .dropdown-option a:hover {
+      text-decoration: underline;
+    }
+
+    .filter-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .filter-actions button {
+      background: var(--accent1);
+      border: none;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.8rem;
+    }
+
+    .filter-actions button:hover {
+      background: #6d5238;
+    }
+
+    .filter-count {
+      margin-left: auto;
+      font-size: 0.85rem;
+      color: var(--muted-color);
+      align-self: center;
+    }
+
+    /* Selection toolbar */
+    .selection-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .toolbar-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .primary-button,
+    .secondary-button {
+      background: var(--accent1);
+      border: none;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.8rem;
+    }
+
+    .secondary-button {
+      background: #ccc;
+      color: #333;
+    }
+
+    .primary-button:hover {
+      background: #6d5238;
+    }
+
+    .secondary-button:hover {
+      background: #aaa;
+    }
+
+    /* Print options panel - hidden by default, toggled by button */
+    .print-options-panel {
+      display: none;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      background: #f9f8f5;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .print-options-panel.visible {
+      display: flex;
+    }
+
+    .print-options-panel label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      padding-right: 1rem;
+      border-right: 1px solid var(--border-color);
+    }
+
+    .print-options-panel label:last-child {
+      border-right: none;
+    }
+
+    /* Recipe card wrapper for checkbox and clickable card */
+    .recipe-card-wrapper {
+      position: relative;
+      cursor: pointer;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .recipe-card-wrapper:hover {
+      transform: translateY(-2px);
+    }
+
+    .recipe-card-checkbox {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 4px;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 0;
+      pointer-events: auto;
+      /* ensure checkbox remains clickable */
+    }
+
+    .recipe-select {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      margin: 0;
+    }
+
+    .recipe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+
+    .recipe-card {
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .recipe-card-wrapper:hover .recipe-card {
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: #f0efe7;
+    }
+
+    .card-content {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #2c2c2c;
+    }
+
+    .card-description {
+      font-size: 0.85rem;
+      color: var(--muted-color);
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-bottom {
+      margin-top: auto;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .card-categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    .card-tags span {
+      display: inline-block;
+      background: transparent;
+      color: var(--accent1);
+      border: 1px solid var(--accent1);
+      padding: 2px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      line-height: 1.2;
+    }
+
+    .card-categories span {
+      display: inline-block;
+      background: transparent;
+      color: var(--accent2);
+      border: 1px solid var(--accent2);
+      padding: 2px 8px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      line-height: 1.2;
+    }
+
+    .card-tags .more-indicator,
+    .card-categories .more-indicator {
+      background: var(--muted-color);
+      border-color: var(--muted-color);
+      color: white;
+    }
+
+    .icon-svg {
+      display: inline-flex;
+      vertical-align: middle;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      margin-right: 4px;
+      margin-top: -2px;
+    }
+
+    .icon-svg svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+      stroke: none;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 1rem;
+      }
+
+      .container {
+        padding: 1rem;
+      }
+
+      .print-options-panel {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .print-options-panel label {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding-right: 0;
+        padding-bottom: 8px;
+        width: 100%;
+      }
+
+      .print-options-panel label:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="recipe-header">
+      <h1>All Recipes</h1>
+      <div class="meta-line" style="margin-top: 8px;">
+        <span><%= recipes.length %> delicious recipes</span>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <div class="filter-group">
+        <div class="filter-dropdown" data-filter-type="tags">
+          <div class="dropdown-label">All Tags</div>
+          <div class="dropdown-list">
+            <div class="dropdown-option" data-check-all="tags">
+              <a href="#">✔ Check All</a>
+            </div>
+            <% allTags.forEach(function(tag) { %>
+            <label class="dropdown-option">
+              <input type="checkbox" value="<%= tag %>"> <%= tag %>
+            </label>
+            <% }); %>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-dropdown" data-filter-type="categories">
+          <div class="dropdown-label">All Categories</div>
+          <div class="dropdown-list">
+            <div class="dropdown-option" data-check-all="categories">
+              <a href="#">✔ Check All</a>
+            </div>
+            <% allCategories.forEach(function(cat) { %>
+            <label class="dropdown-option">
+              <input type="checkbox" value="<%= cat %>"> <%= cat %>
+            </label>
+            <% }); %>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button id="applyFilters">Apply Filters</button>
+        <button id="clearFilters">Clear</button>
+      </div>
+      <div class="filter-count">
+        Showing <span id="visibleCount">0</span> of <span id="totalCount">0</span> recipes
+      </div>
+    </div>
+
+    <!-- Selection toolbar with Print Options button on the right -->
+    <div class="selection-toolbar">
+      <div class="toolbar-buttons">
+        <button id="selectAllVisibleBtn" class="secondary-button">Select Visible</button>
+        <button id="clearSelectionBtn" class="secondary-button">Clear Selection</button>
+        <button id="outputSelectedBtn" class="primary-button">Output Selected (<span id="selectedCount">0</span>)</button>
+      </div>
+      <button id="togglePrintOptionsBtn" class="secondary-button">Print Options ▼</button>
+    </div>
+
+    <!-- Print options panel (hidden by default) -->
+    <div id="printOptionsPanel" class="print-options-panel">
+      <label>
+        <input type="checkbox" id="optShowImage" checked> Show Image
+      </label>
+      <label>
+        <input type="checkbox" id="optShowTags" checked> Show Tags
+      </label>
+      <label>
+        <input type="checkbox" id="optShowNotes" checked> Show Notes
+      </label>
+      <label>
+        <input type="checkbox" id="optShowSource" checked> Show Source
+      </label>
+      <label>
+        <input type="checkbox" id="optCombinePDF" checked> Combine into one PDF
+      </label>
+      <div class="margin-control">
+        <label style="display: flex; align-items: center; gap: 10px;">
+          <span>Page Margins:</span>
+          <input type="range" id="marginSlider" min="0" max="1" step="0.05" value="0.5">
+          <span id="marginValue">0.5 in</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="recipe-grid">
+      <% recipes.forEach(function(recipe) { %>
+      <div class="recipe-card-wrapper" data-slug="<%= recipe.slug %>">
+        <div class="recipe-card-checkbox">
+          <input type="checkbox" class="recipe-select" data-slug="<%= recipe.slug %>">
+        </div>
+        <div class="recipe-card">
+          <% if (recipe.fullImageUrl) { %>
+          <img class="card-image" src="<%= recipe.fullImageUrl %>" alt="<%= recipe.name %>" loading="lazy">
+          <% } else { %>
+          <div class="card-image" style="background: #e8e4dc; display: flex; align-items: center; justify-content: center;">
+            <span class="icon-svg" style="width: 48px; height: 48px;">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" style="width: 48px; height: 48px;">
+                <path d="M320-200h60v-270q26-8 43-28.5t17-49.5v-152q0-8-6-14t-14-6q-8 0-14 6t-6 14v100h-30v-100q0-8-6-14t-14-6q-8 0-14 6t-6 14v100h-30v-100q0-8-6-14t-14-6q-8 0-14 6t-6 14v152q0 29 17 49.5t43 28.5v270Zm240 0h60v-254q33-16 51.5-51t18.5-82q0-57-28.5-95T590-720q-43 0-71.5 38T490-587q0 47 18.5 82t51.5 51v254ZM160-80q-33 0-56.5-23.5T80-160v-640q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v640q0 33-23.5 56.5T800-80H160Zm0-80h640v-640H160v640Zm0 0v-640 640Z" />
+              </svg>
+            </span>
+          </div>
+          <% } %>
+          <div class="card-content">
+            <div class="card-title"><%= recipe.name %></div>
+            <% if (recipe.description) { %>
+            <div class="card-description"><%= recipe.description.substring(0, 100) %><%= recipe.description.length > 100 ? '…' : '' %></div>
+            <% } %>
+
+            <div class="card-bottom">
+              <!-- Tags row -->
+              <div class="card-tags" data-tags='<%= JSON.stringify(recipe.tags || []) %>'></div>
+              <!-- Categories row -->
+              <div class="card-categories" data-categories='<%= JSON.stringify(recipe.recipeCategory || []) %>'></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // Max visible items before showing +n
+      const MAX_VISIBLE = 3;
+
+      function truncateContainer(container, items, nameKey) {
+        if (!items || items.length === 0) {
+          container.style.display = 'none';
+          return;
+        }
+
+        container.innerHTML = '';
+
+        const visible = items.slice(0, MAX_VISIBLE);
+        visible.forEach(item => {
+          const span = document.createElement('span');
+          span.textContent = item[nameKey];
+          container.appendChild(span);
+        });
+
+        if (items.length > MAX_VISIBLE) {
+          const remaining = items.length - MAX_VISIBLE;
+          const moreSpan = document.createElement('span');
+          moreSpan.textContent = `+${remaining}`;
+          moreSpan.classList.add('more-indicator');
+          container.appendChild(moreSpan);
+        }
+
+        container.style.display = 'flex';
+      }
+
+      document.querySelectorAll('.recipe-card').forEach(card => {
+        const tagsContainer = card.querySelector('.card-tags');
+        const categoriesContainer = card.querySelector('.card-categories');
+
+        const tags = JSON.parse(tagsContainer.dataset.tags || '[]');
+        const categories = JSON.parse(categoriesContainer.dataset.categories || '[]');
+
+        truncateContainer(tagsContainer, tags, 'name');
+        truncateContainer(categoriesContainer, categories, 'name');
+      });
+    })();
+
+    // Checkbox Dropdowns and Filtering (same as before)
+    (function() {
+      function initDropdown(dropdown) {
+        const label = dropdown.querySelector('.dropdown-label');
+        const checkboxes = dropdown.querySelectorAll('input[type="checkbox"]');
+        const checkAllLink = dropdown.querySelector('[data-check-all] a');
+        const filterType = dropdown.dataset.filterType;
+        const prefix = filterType === 'tags' ? 'Tags: ' : 'Categories: ';
+
+        function updateLabelAndCheckAll() {
+          const checked = Array.from(checkboxes).filter(cb => cb.checked);
+          const total = checkboxes.length;
+          if (checked.length === 0) {
+            label.textContent = prefix + 'All';
+          } else if (checked.length === total) {
+            label.textContent = prefix + `All (${total})`;
+          } else {
+            label.textContent = prefix + `${checked.length} selected`;
+          }
+
+          if (checkAllLink) {
+            const allChecked = checked.length === total;
+            checkAllLink.textContent = allChecked ? '✘ Uncheck All' : '✔ Check All';
+          }
+        }
+
+        function toggleOpen(e) {
+          e.stopPropagation();
+          const isOpen = dropdown.classList.contains('on');
+          document.querySelectorAll('.filter-dropdown.on').forEach(d => d.classList.remove('on'));
+          if (!isOpen) dropdown.classList.add('on');
+        }
+
+        function closeDropdown() {
+          dropdown.classList.remove('on');
+        }
+
+        label.addEventListener('click', toggleOpen);
+        document.addEventListener('click', function(e) {
+          if (!dropdown.contains(e.target)) closeDropdown();
+        });
+
+        if (checkAllLink) {
+          checkAllLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            checkboxes.forEach(cb => cb.checked = !allChecked);
+            updateLabelAndCheckAll();
+          });
+        }
+
+        checkboxes.forEach(cb => {
+          cb.addEventListener('change', updateLabelAndCheckAll);
+        });
+
+        dropdown.updateLabel = updateLabelAndCheckAll;
+        updateLabelAndCheckAll();
+      }
+
+      document.querySelectorAll('.filter-dropdown').forEach(initDropdown);
+
+      const recipeCards = Array.from(document.querySelectorAll('.recipe-card'));
+      const totalCount = recipeCards.length;
+      document.getElementById('totalCount').innerText = totalCount;
+
+      function getSelectedValues(dropdown) {
+        const checked = dropdown.querySelectorAll('input[type="checkbox"]:checked');
+        return Array.from(checked).map(cb => cb.value);
+      }
+
+      function matchesFilter(card, selectedTags, selectedCategories) {
+        const tagsContainer = card.querySelector('.card-tags');
+        const tags = JSON.parse(tagsContainer.dataset.tags || '[]').map(t => t.name);
+        const categoriesContainer = card.querySelector('.card-categories');
+        const categories = JSON.parse(categoriesContainer.dataset.categories || '[]').map(c => c.name);
+
+        const tagMatch = (selectedTags.length === 0) || tags.some(tag => selectedTags.includes(tag));
+        const categoryMatch = (selectedCategories.length === 0) || categories.some(cat => selectedCategories.includes(cat));
+        return tagMatch && categoryMatch;
+      }
+
+      function applyFilters() {
+        const tagsDropdown = document.querySelector('.filter-dropdown[data-filter-type="tags"]');
+        const categoriesDropdown = document.querySelector('.filter-dropdown[data-filter-type="categories"]');
+        const selectedTags = tagsDropdown ? getSelectedValues(tagsDropdown) : [];
+        const selectedCategories = categoriesDropdown ? getSelectedValues(categoriesDropdown) : [];
+
+        let visible = 0;
+        recipeCards.forEach(card => {
+          const wrapper = card.closest('.recipe-card-wrapper');
+          if (matchesFilter(card, selectedTags, selectedCategories)) {
+            if (wrapper) wrapper.style.display = '';
+            visible++;
+          } else {
+            if (wrapper) wrapper.style.display = 'none';
+          }
+        });
+        document.getElementById('visibleCount').innerText = visible;
+      }
+
+      function clearFilters() {
+        const allCheckboxes = document.querySelectorAll('.filter-dropdown input[type="checkbox"]');
+        allCheckboxes.forEach(cb => cb.checked = false);
+        document.querySelectorAll('.filter-dropdown').forEach(dropdown => {
+          if (typeof dropdown.updateLabel === 'function') {
+            dropdown.updateLabel();
+          }
+        });
+        document.querySelectorAll('.recipe-card-wrapper').forEach(wrapper => wrapper.style.display = '');
+        const total = document.querySelectorAll('.recipe-card-wrapper').length;
+        document.getElementById('visibleCount').innerText = total;
+      }
+
+      document.getElementById('applyFilters').addEventListener('click', applyFilters);
+      document.getElementById('clearFilters').addEventListener('click', clearFilters);
+      applyFilters(); // initial
+    })();
+
+    // Selection and Print with PDF generation, card click toggles checkbox
+    (function() {
+      const selectAllVisibleBtn = document.getElementById('selectAllVisibleBtn');
+      const clearSelectionBtn = document.getElementById('clearSelectionBtn');
+      const outputSelectedBtn = document.getElementById('outputSelectedBtn');
+      const selectedCountSpan = document.getElementById('selectedCount');
+      const togglePrintOptionsBtn = document.getElementById('togglePrintOptionsBtn');
+      const printOptionsPanel = document.getElementById('printOptionsPanel');
+
+      // Toggle print options panel
+      let optionsVisible = false;
+      togglePrintOptionsBtn.addEventListener('click', () => {
+        optionsVisible = !optionsVisible;
+        if (optionsVisible) {
+          printOptionsPanel.classList.add('visible');
+          togglePrintOptionsBtn.textContent = 'Print Options ▲';
+        } else {
+          printOptionsPanel.classList.remove('visible');
+          togglePrintOptionsBtn.textContent = 'Print Options ▼';
+        }
+      });
+
+      function updateSelectedCount() {
+        const checked = document.querySelectorAll('.recipe-select:checked').length;
+        selectedCountSpan.innerText = checked;
+      }
+
+      function getSelectedSlugs() {
+        const checkboxes = document.querySelectorAll('.recipe-select:checked');
+        return Array.from(checkboxes).map(cb => cb.dataset.slug);
+      }
+
+      function selectAllVisible() {
+        const visibleWrappers = document.querySelectorAll('.recipe-card-wrapper:not([style*="display: none"])');
+        visibleWrappers.forEach(wrapper => {
+          const cb = wrapper.querySelector('.recipe-select');
+          if (cb) cb.checked = true;
+        });
+        updateSelectedCount();
+      }
+
+      function clearSelection() {
+        document.querySelectorAll('.recipe-select').forEach(cb => cb.checked = false);
+        updateSelectedCount();
+      }
+
+      selectAllVisibleBtn.addEventListener('click', selectAllVisible);
+      clearSelectionBtn.addEventListener('click', clearSelection);
+
+      // Make entire card clickable to toggle checkbox
+      document.querySelectorAll('.recipe-card-wrapper').forEach(wrapper => {
+        const card = wrapper.querySelector('.recipe-card');
+        const checkbox = wrapper.querySelector('.recipe-select');
+        if (card && checkbox) {
+          card.addEventListener('click', (e) => {
+            // Prevent toggling if the click originated from the checkbox itself
+            if (e.target === checkbox || checkbox.contains(e.target)) return;
+            checkbox.checked = !checkbox.checked;
+            // Trigger change event manually
+            const changeEvent = new Event('change', {
+              bubbles: true
+            });
+            checkbox.dispatchEvent(changeEvent);
+            updateSelectedCount();
+          });
+        }
+      });
+
+      // Listen to all checkbox changes (including those toggled via card click)
+      document.querySelectorAll('.recipe-select').forEach(cb => {
+        cb.addEventListener('change', updateSelectedCount);
+      });
+
+      outputSelectedBtn.addEventListener('click', async function() {
+        const slugs = getSelectedSlugs();
+        if (slugs.length === 0) {
+          alert('Please select at least one recipe to print.');
+          return;
+        }
+
+        const marginInches = parseFloat(marginSlider.value).toFixed(2);
+        const options = {
+          showTags: document.getElementById('optShowTags').checked,
+          showImage: document.getElementById('optShowImage').checked,
+          showSource: document.getElementById('optShowSource').checked,
+          showNotes: document.getElementById('optShowNotes').checked,
+          combine: document.getElementById('optCombinePDF').checked,
+          margin: `${marginInches}in`
+        };
+
+        try {
+          const response = await fetch('/api/print-pdf', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              slugs,
+              options
+            })
+          });
+
+          if (!response.ok) throw new Error('Server error');
+
+          // Extract filename from Content-Disposition header
+          const contentDisposition = response.headers.get('Content-Disposition');
+          let filename = 'recipes.pdf'; // fallback
+          if (contentDisposition) {
+            const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+            if (match && match[1]) {
+              filename = match[1].replace(/['"]/g, '');
+            }
+          }
+
+          const blob = await response.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        } catch (err) {
+          console.error('Print error:', err);
+          alert('Failed to generate PDF. See console for details.');
+        }
+      });
+
+      // Update selected count after filters change (because visible wrappers change)
+      function afterFilterUpdate() {
+        updateSelectedCount();
+      }
+      const applyBtn = document.getElementById('applyFilters');
+      const clearFiltersBtn = document.getElementById('clearFilters');
+      if (applyBtn) applyBtn.addEventListener('click', () => setTimeout(afterFilterUpdate, 50));
+      if (clearFiltersBtn) clearFiltersBtn.addEventListener('click', () => setTimeout(afterFilterUpdate, 50));
+      afterFilterUpdate();
+    })();
+
+    const marginSlider = document.getElementById('marginSlider');
+    const marginValue = document.getElementById('marginValue');
+
+    function updateMarginDisplay() {
+      const val = parseFloat(marginSlider.value).toFixed(2);
+      marginValue.textContent = `${val} in`;
+    }
+    marginSlider.addEventListener('input', updateMarginDisplay);
+    updateMarginDisplay();
+  </script>
+</body>
+
+</html>
