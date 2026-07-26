@@ -1,8 +1,21 @@
-# Use the official, pre‑built Puppeteer image
-FROM ghcr.io/puppeteer/puppeteer:latest
+FROM node:18-bullseye-slim
 
-# Switch to root temporarily to set up the app directory
-USER root
+# Install Chromium and extra fonts for better rendering
+RUN apt-get update \
+ && apt-get install -y \
+    chromium \
+    fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf \
+    --no-install-recommends \
+ && rm -rf /var/lib/apt/lists/*
+
+# Tell Puppeteer where to find the browser
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+
+# Create a non‑root user for running the browser
+RUN groupadd -r pptruser \
+ && useradd -r -g pptruser -G audio,video pptruser \
+ && mkdir -p /home/pptruser/Downloads \
+ && chown -R pptruser:pptruser /home/pptruser
 
 WORKDIR /app
 
@@ -10,25 +23,18 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --omit=dev
 
-# Copy the rest of your application
+# Copy the rest of the app
 COPY views/ ./views/
 COPY app.js ./
 
-# Make sure the non‑root user owns the app directory
 RUN chown -R pptruser:pptruser /app
-
-# Switch back to the unprivileged user provided by the base image
 USER pptruser
 
-# Default port (can be overridden at runtime)
+# Your custom environment variables (to be supplied at runtime)
 ENV PORT=3000
-
-# Your app needs these to function – provide them at runtime
-# MEALIE_URL, MEALIE_TOKEN, CACHE_TTL are not set here, only documented
 ENV MEALIE_URL="" \
     MEALIE_TOKEN="" \
-    CACHE_TTL="3600"
+    CACHE_TTL=""
 
 EXPOSE ${PORT}
-
 CMD ["node", "app.js"]

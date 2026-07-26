@@ -262,6 +262,7 @@ async function htmlToPdf(html) {
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
       ],
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH 
     });
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "networkidle0", timeout: 30000 });
