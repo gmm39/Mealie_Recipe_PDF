@@ -20,9 +20,6 @@ RUN chown -R pptruser:pptruser /app
 # Switch back to the unprivileged user provided by the base image
 USER pptruser
 
-# The base image already sets PUPPETEER_EXECUTABLE_PATH, but we’ll keep the env
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
-
 # Default port (can be overridden at runtime)
 ENV PORT=3000
 
