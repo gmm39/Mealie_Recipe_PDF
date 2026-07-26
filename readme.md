@@ -12,6 +12,17 @@ Generates printable PDFs from your [Mealie](https://mealie.io/) recipes. Browse 
 - Docker image published on GitHub Container Registry
 - Long ingredient lists wrap into 2 or 3 columns automatically instead of running off the page
 
+### Print Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `showTags` | boolean | `true` | Include recipe tags |
+| `showImage` | boolean | `false` | Include recipe image |
+| `showSource` | boolean | `true` | Include source URL |
+| `showNotes` | boolean | `true` | Include recipe notes |
+| `combine` | boolean | `true` | Combine into one PDF (`true`) or return a ZIP of individual PDFs (`false`) |
+| `margin` | string | `"0.5in"` | Page margin |
+
 ## Quick Start
 
 ### Using Docker
@@ -36,15 +47,6 @@ Then open `http://localhost:3000` in your browser.
 | `CACHE_TTL` | Cache TTL in seconds | `3600` |
 
 > `MEALIE_TOKEN` is required. Generate one from your Mealie instance under User Settings → API Tokens.
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `showTags` | boolean | `true` | Include recipe tags |
-| `showImage` | boolean | `false` | Include recipe image |
-| `showSource` | boolean | `true` | Include source URL |
-| `showNotes` | boolean | `true` | Include recipe notes |
-| `combine` | boolean | `true` | Combine into one PDF (`true`) or return a ZIP of individual PDFs (`false`) |
-| `margin` | string | `"0.5in"` | Page margin |
 
 ## Docker Image
 
