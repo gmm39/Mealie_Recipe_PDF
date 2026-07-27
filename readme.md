@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src=".images/site-preview.jpg" alt="Mealie Recipe PDF web app preview" width="800">
+  <img src=".images/site-preview.webp" alt="Mealie Recipe PDF web app preview" width="800">
 </p>
 
 ## Features
@@ -37,7 +37,7 @@
 
 | `showImage: true` | `showImage: false` |
 |:---:|:---:|
-| <img src=".images/pdf-with-image.jpg" alt="Example PDF output with recipe image" width="380"> | <img src=".images/pdf-without-image.jpg" alt="Example PDF output without recipe image" width="380"> |
+| <img src=".images/pdf-with-image.webp" alt="Example PDF output with recipe image" width="380"> | <img src=".images/pdf-without-image.webp" alt="Example PDF output without recipe image" width="380"> |
 
 ## Quick Start
 
