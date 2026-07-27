@@ -1,6 +1,16 @@
-# Mealie Recipe PDF
+<p align="center">
+  <img src="docs/images/icon.png" alt="Mealie Recipe PDF icon" width="96">
+</p>
 
-Generates printable PDFs from your [Mealie](https://mealie.io/) recipes. Browse your recipes, filter by tag or category, pick what you want, and export as a single PDF or a ZIP of individual files.
+<h1 align="center">Mealie Recipe PDF</h1>
+
+<p align="center">
+  Generates printable PDFs from your <a href="https://mealie.io/">Mealie</a> recipes. Browse your recipes, filter by tag or category, pick what you want, and export as a single PDF or a ZIP of individual files.
+</p>
+
+<p align="center">
+  <img src="docs/images/site-preview.webp" alt="Mealie Recipe PDF web app preview" width="800">
+</p>
 
 ## Features
 
@@ -22,6 +32,12 @@ Generates printable PDFs from your [Mealie](https://mealie.io/) recipes. Browse 
 | `showNotes` | boolean | `true` | Include recipe notes |
 | `combine` | boolean | `true` | Combine into one PDF (`true`) or return a ZIP of individual PDFs (`false`) |
 | `margin` | string | `"0.5in"` | Page margin |
+
+#### Example Output
+
+| `showImage: true` | `showImage: false` |
+|:---:|:---:|
+| <img src="docs/images/pdf-with-image.png" alt="Example PDF output with recipe image" width="380"> | <img src="docs/images/pdf-without-image.png" alt="Example PDF output without recipe image" width="380"> |
 
 ## Quick Start
 
