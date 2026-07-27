@@ -24,6 +24,7 @@ COPY package*.json ./
 RUN npm ci --omit=dev
 
 # Copy the rest of the app
+COPY assets/ ./assets/
 COPY views/ ./views/
 COPY app.js ./
 
