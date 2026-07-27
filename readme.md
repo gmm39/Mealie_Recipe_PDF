@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/icon.png" alt="Mealie Recipe PDF icon" width="96">
+  <img src=".images/icon.png" alt="Mealie Recipe PDF icon" width="96">
 </p>
 
 <h1 align="center">Mealie Recipe PDF</h1>
@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/site-preview.webp" alt="Mealie Recipe PDF web app preview" width="800">
+  <img src=".images/site-preview.webp" alt="Mealie Recipe PDF web app preview" width="800">
 </p>
 
 ## Features
@@ -33,11 +33,11 @@
 | `combine` | boolean | `true` | Combine into one PDF (`true`) or return a ZIP of individual PDFs (`false`) |
 | `margin` | string | `"0.5in"` | Page margin |
 
-#### Example Output
+### Example Output
 
 | `showImage: true` | `showImage: false` |
 |:---:|:---:|
-| <img src="docs/images/pdf-with-image.png" alt="Example PDF output with recipe image" width="380"> | <img src="docs/images/pdf-without-image.png" alt="Example PDF output without recipe image" width="380"> |
+| <img src=".images/pdf-with-image.webp" alt="Example PDF output with recipe image" width="380"> | <img src=".images/pdf-without-image.webp" alt="Example PDF output without recipe image" width="380"> |
 
 ## Quick Start
 
