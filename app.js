@@ -29,6 +29,7 @@ const cache = new NodeCache({ stdTTL: CACHE_TTL });
 
 app.use(express.json());
 app.set("views", path.join(__dirname, "views"));
+app.use("/assets", express.static(path.join(__dirname, "assets")));
 app.set("view engine", "ejs");
 
 // === Mealie API Services ===
